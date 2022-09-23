@@ -47,4 +47,24 @@ class UsersController < ApplicationController
 			render :edit
 		end
 	end
+
+	def destroy
+		@user = User.find_by_id(params[:id])
+		if @user&.destroy
+			redirect_to new_user_url
+		else
+			if @user 
+				flash.now[:errors] = @user.errors.full_messages 
+			else
+				flash.now[:errors] = ["Could not update successfully"]
+			end
+		render :show
+		end
+	end
+
+	private
+
+	def user_params
+		params.require(:user).permit(:username, :password)
+	end
 end
