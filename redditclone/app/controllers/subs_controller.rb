@@ -1,5 +1,5 @@
 class SubsController < ApplicationController
-    before_action :require_logged_in, [:]
+    before_action :require_logged_in, only: [:create, :edit, :update, :new]
     def index
         @subs = Sub.all
         render :index
@@ -32,17 +32,19 @@ class SubsController < ApplicationController
 
     def update
         @sub = Sub.find_by_id(params[:id])
-        if current_user.id == @sub.
-        if @sub&.update(sub_params)
-            redirect_to sub_url(@sub)
-        else
-            if @sub
-                flash.now[:errors] = @sub.errors.full_messages
+        if current_user.id == @sub.moderator_id
+            if @sub&.update(sub_params)
+                redirect_to sub_url(@sub)
             else
-                flash.now[:errors] = ["Could not update sub"]
+                if @sub
+                    flash.now[:errors] = @sub.errors.full_messages
+                else
+                    flash.now[:errors] = ["Could not update sub"]
+                end
+            render :edit
             end
-        render :edit
         end
+        redirect_to subs_url
     end
 
     private

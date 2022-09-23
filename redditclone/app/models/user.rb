@@ -19,8 +19,16 @@ class User < ApplicationRecord
 
     has_many :subs,
     foreign_key: :moderator_id,
-    class_name: :Sub
-    #spire
+    dependent: :destroy
+
+    has_many :posts,
+    foreign_key: :author_id,
+    dependent: :destroy 
+
+    has_many :sub_posts,
+    through: :subs,
+    source: :posts
+    
     def self.find_by_credentials(username, password)
         @user = User.find_by_username(username)
         if @user && @user.is_password?(password)

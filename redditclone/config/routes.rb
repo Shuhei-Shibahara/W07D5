@@ -8,5 +8,8 @@ Rails.application.routes.draw do
     resources :subs, only: [:edit, :update, :create, :new]
   end
   resource :session, only: [:new, :create, :destroy]
-  resources :subs, except: [:destroy]
+  resources :subs, only: [:show, :index] do 
+    resources :posts, only: [:new, :create, :edit, :update]
+  end
+  
 end
